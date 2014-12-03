@@ -1,6 +1,9 @@
 package net.josegarvin.cartaMesAlta;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 public class Jugador {
@@ -14,7 +17,7 @@ public class Jugador {
     // TODO Auto-generated constructor stub
     this.nom = nomJ;
     this.cartes = new ArrayList<Carta>();
-    this.monedes = generarMonedes();
+    this.monedes = 3;
     this.aposta = 0;
   }
 
@@ -39,13 +42,28 @@ public class Jugador {
     cartes.add(carta);
   }
   
-  public void retornarCartes(){
-    ArrayList<Carta> cartesRetornar;
-   //Carta cartaMesAlta = this.cartes[0];
-    //for(int i = 0; i<this.cartes.size() -1;i++){
-      	
-      
-    //}
+  public ArrayList<Carta> getCartesInutils(){
+    ArrayList<Carta> cartesRetornar = new ArrayList<Carta>();
+    ordenarCartes();
+    //System.out.println(cartes.get(0).getNumero() + " " +cartes.get(1).getNumero());
+    for(int i = cartes.size()-1; i>=1;i--){
+      cartesRetornar.add(cartes.get(i));
+      cartes.remove(i);
+    }
+    
+    return cartesRetornar;
+  }
+  
+  
+ 
+  public void ordenarCartes(){
+    Collections.sort(cartes, new Comparator<Carta>() {
+
+public int compare(Carta o1, Carta o2) {
+        // TODO Auto-generated method stub
+        return new Integer(o2.getNumero()).compareTo(new Integer(o1.getNumero()));
+      }
+});
   }
 
 public String getNom() {
@@ -80,5 +98,12 @@ public void setAposta(int aposta) {
   this.aposta = aposta;
 }
 
+public String cartesToString() {
+  String resultat = "";
+  for(int i = 0; i<cartes.size();i++){
+    resultat += cartes.get(i).getNumero() + cartes.get(i).getPal() + " --- ";
+  }
+  return resultat;
+}
   
 }

@@ -21,6 +21,7 @@ public class Joc {
     indicarJugInicials();
     començaRonda();
     donarCartes();
+    cercarGuanyadorRonda();
   }
 
   /**
@@ -82,23 +83,59 @@ public class Joc {
     
     
     //Recorreguem el jugadors.
-    for(int i = 0; i<jugadorsPartida.size();i++){
+    for(int i = jugadorsPartida.size()-1; i>=0;i--){
       
       //Li assignem una nova carta per cada moneda apostada.
       int apostaJugador = jugadorsPartida.get(i).getAposta();
       for(int j = 0; j<jugadorsPartida.get(i).getAposta(); j++){
         int rannum = rand.nextInt(barallaCartes.getCartes().size());
         jugadorsPartida.get(i).rebreCarta(barallaCartes.getCartes().get(rannum));
+        barallaCartes.getCartes().remove(rannum);
       }
     }
     
-    for(int i = 0; i<jugadorsPartida.size();i++){
-      System.out.println("Les cartes del " + jugadorsPartida.get(i).getNom() + " son: " + jugadorsPartida.get(i).getCartes());
-    }
+    System.out.println("Tamany BARALLA!!!__>"+barallaCartes.getCartes().size());
     
+    for(int i = 0; i<jugadorsPartida.size();i++){
+      Carta cartaAlta;
+      System.out.println("Les cartes del " + jugadorsPartida.get(i).getNom() + " son: " + jugadorsPartida.get(i).cartesToString());
+      ArrayList<Carta> cartesInutils = jugadorsPartida.get(i).getCartesInutils();
+      afegirCartesBaralla(cartesInutils);
+    
+    }
+    	System.out.println("Tamany BARALLA!!!__>"+barallaCartes.getCartes().size());
     
   }
   
+  
+  void afegirCartesBaralla(ArrayList<Carta> cartesARetornar){
+    for(int i = 0; i<cartesARetornar.size();i++){
+      barallaCartes.getCartes().add(cartesARetornar.get(i));
+    }
+  }
+  
+  int getTotalDinersApostats(){
+    int dinersRonda = 0;
+    for(int i = 0; i<jugadorsPartida.size();i++){
+      dinersRonda += jugadorsPartida.get(i).getAposta();
+    }
+    return dinersRonda;
+  }
+  
+  void cercarGuanyadorRonda(){
+    Jugador campioRonda = jugadorsPartida.get(0);
+    for(int i = 1; i<jugadorsPartida.size(); i++){
+      if(campioRonda.getCartes().get(0).getNumero() <jugadorsPartida.get(i).getCartes().get(0).getNumero()){
+        campioRonda =jugadorsPartida.get(i); 
+      }
+      
+    }
+    
+    System.out.println("El campio es " + campioRonda.getNom().toUpperCase());
+    System.out.println("les seves monedes ABANS:" + campioRonda.getMonedes());
+    campioRonda.setMonedes(campioRonda.getMonedes() + getTotalDinersApostats());
+    System.out.println("les seves monedes ARA:" + campioRonda.getMonedes());
+  }
   
   void tractarOpcio(String opcioUsuari, Jugador jugador) {
     boolean opcioOk = false;
