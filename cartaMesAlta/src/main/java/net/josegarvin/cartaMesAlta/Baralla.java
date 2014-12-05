@@ -1,10 +1,15 @@
 package net.josegarvin.cartaMesAlta;
 
+
 import java.util.ArrayList;
 
-public class Baralla {
+public class Baralla{
 
-  private ArrayList<Carta> cartes;
+  /**
+ * 
+ */
+  
+private ArrayList<Carta> cartes;
   String[] pals = { "-B", "-O", "-E", "-C" };
   int[] numeros = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 

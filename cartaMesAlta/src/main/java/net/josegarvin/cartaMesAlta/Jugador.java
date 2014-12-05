@@ -1,14 +1,19 @@
 package net.josegarvin.cartaMesAlta;
 
-import java.lang.reflect.Array;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
-public class Jugador {
+public class Jugador implements Serializable{
 
-  String nom;
+  /**
+ * 
+ */
+  private static final long serialVersionUID = 3456735106916880740L;
+String nom;
   ArrayList<Carta> cartes;
   int monedes;
   int aposta;

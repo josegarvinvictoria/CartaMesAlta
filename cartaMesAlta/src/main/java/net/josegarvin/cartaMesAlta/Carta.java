@@ -1,8 +1,20 @@
 package net.josegarvin.cartaMesAlta;
 
-public class Carta {
+import java.io.Serializable;
 
-  int numero;
+
+
+public class Carta implements Serializable{
+
+  /**
+ * 
+ */
+  private static final long serialVersionUID = -191781805571611534L;
+/**
+ * 
+ */
+  
+int numero;
   String pal;
 
   Carta(int numC, String palC) {
