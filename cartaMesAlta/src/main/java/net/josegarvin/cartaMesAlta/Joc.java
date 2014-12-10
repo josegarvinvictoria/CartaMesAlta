@@ -21,10 +21,11 @@ public class Joc implements Serializable {
   /**
  * 
  */
-  
+
   Scanner lector = new Scanner(System.in);
   Baralla barallaCartes;
   ArrayList<Jugador> jugadorsPartida;
+  int jugadorsAfegir;
   int contRonda;
   boolean fiJoc = false;
 
@@ -34,25 +35,33 @@ public class Joc implements Serializable {
     String nFitxer = "serial.ser";
     File fitxer = new File(nFitxer);
     jugadorsPartida = new ArrayList<Jugador>();
-    
+
   }
 
   void començaJoc() {
+    System.out.println(barallaCartes.getCartes().size());
     indicarJugInicials();
-    while(!fiJoc){
-    començaRonda();
-    donarCartes();
-    cercarGuanyadorRonda();
-    }
-  }
-  
-  void continuaJoc(){
-    while(!fiJoc){
+    while (!fiJoc) {
       començaRonda();
       donarCartes();
       cercarGuanyadorRonda();
+      if (jugadorsAfegir > 0) {
+        afegirJugadors(jugadorsAfegir);
       }
-    
+
+    }
+  }
+
+  void continuaJoc() {
+    while (!fiJoc) {
+      començaRonda();
+      donarCartes();
+      cercarGuanyadorRonda();
+      if (jugadorsAfegir > 0) {
+        afegirJugadors(jugadorsAfegir);
+      }
+    }
+
   }
 
   /**
@@ -73,6 +82,7 @@ public class Joc implements Serializable {
   void començaRonda() {
 
     contRonda++;
+    jugadorsAfegir = 0;
     System.out.println("-------- Ronda " + contRonda + " --------");
     String opcioUsuari;
     // Recorreguem els jugadors per realitzar apostes.
@@ -81,13 +91,15 @@ public class Joc implements Serializable {
       System.out.println("Monedes disponibles: "
           + jugadorsPartida.get(i).getMonedes());
       System.out.println();
-      System.out
-          .println("Nº de monedes a apostar o tecla I per afegir un nou jugador:");
-      opcioUsuari = lector.next();
-
-      // (RETIRAR?)!!!
-      // *************
-      tractarOpcio(opcioUsuari, jugadorsPartida.get(i));
+      
+      if(jugadorsPartida.get(i).getAposta() == 0){
+        opcioUsuari = demanarOpcio();
+        tractarOpcio(opcioUsuari, jugadorsPartida.get(i));
+      }else{
+        System.out.println("El jug " + jugadorsPartida.get(i).getNom() +" ja ha apostat!");
+        System.out.println();
+        System.out.println();
+      }
 
     }
 
@@ -126,20 +138,18 @@ public class Joc implements Serializable {
       }
     }
 
-    System.out.println("Tamany BARALLA!!!__>"
-        + barallaCartes.getCartes().size());
-
     for (int i = 0; i < jugadorsPartida.size(); i++) {
       Carta cartaAlta;
-      System.out.println("Les cartes del " + jugadorsPartida.get(i).getNom()
-          + " son: " + jugadorsPartida.get(i).cartesToString());
       ArrayList<Carta> cartesInutils = jugadorsPartida.get(i)
           .getCartesInutils();
       afegirCartesBaralla(cartesInutils);
 
+      System.out.println("La carta mès alta del jug "
+          + jugadorsPartida.get(i).getNom() + " és: "
+          + jugadorsPartida.get(i).cartesToString());
+
     }
-    System.out.println("Tamany BARALLA!!!__>"
-        + barallaCartes.getCartes().size());
+    
     serialitzaObjecte();
   }
 
@@ -166,49 +176,97 @@ public class Joc implements Serializable {
       }
 
     }
-
-    System.out.println("El campio es " + campioRonda.getNom().toUpperCase());
-    System.out.println("les seves monedes ABANS:" + campioRonda.getMonedes());
+   
+    System.out.println("-------->El campio es " + campioRonda.getNom().toUpperCase() + "<--------");
+    System.out.println("Les seves monedes ABANS:" + campioRonda.getMonedes());
     campioRonda.setMonedes(campioRonda.getMonedes() + getTotalDinersApostats());
-    System.out.println("les seves monedes ARA:" + campioRonda.getMonedes());
+    System.out.println("Les seves monedes ARA:" + campioRonda.getMonedes());
+
+    // Un cop trobat el guanyador retornem les cartes amb les que s'ha jugat.
+    for (int i = 0; i < jugadorsPartida.size(); i++) {
+      barallaCartes.getCartes().add(jugadorsPartida.get(i).getCartes().get(0));
+    }
+    
+    //Al trobar un guanyador, reinicialitzem les apostes de tots el jugadors per a la pròxima ronda.
+    reinicialitzarApostes();
+  }
+
+  String demanarOpcio() {
+    String opcio = "";
+    boolean opcioOk = false;
+    System.out
+        .println("Que vols fer? [A]postar, [N]ou Jugador, [P]ausar partida:");
+
+    while (!opcioOk) {
+      opcio = lector.nextLine();
+      if (opcio.equalsIgnoreCase("A") || opcio.equalsIgnoreCase("N")
+          || opcio.equalsIgnoreCase("P")) {
+        opcioOk = true;
+        break;
+      }
+      System.out.println("Opció invàlida! Torna-hi:");         
+    }
+    return opcio;
   }
 
   void tractarOpcio(String opcioUsuari, Jugador jugador) {
-    boolean opcioOk = false;
-    int apostaUsuari = 0;
-
-    while (!opcioOk) {
-      if (opcioUsuari.equals("I")) {
-
-        opcioOk = true;
-        afegirJugadors(1);
-        System.out.println("Nou jugador afegit!");
-
-      } else {
-        // Es una aposta!
-
-        try {
-
-          apostaUsuari = Integer.parseInt(opcioUsuari);
-
-          while (!jugador.teMonedesPerApostar(apostaUsuari)) {
-            System.out.println("Monedes insuficients! Torna-hi:");
-            apostaUsuari = lector.nextInt();
-          }
-          jugador.setAposta(apostaUsuari);
-          jugador.setMonedes(jugador.getMonedes() - apostaUsuari);
-          opcioOk = true;
-          serialitzaObjecte();
-        } catch (java.lang.NumberFormatException e) {
-          System.out.println("Opcio incorrecte! Torna-hi:");
-          opcioUsuari = lector.next();
-        }
-
-      }
+    
+    
+    if(opcioUsuari.equalsIgnoreCase("A")){
+      apostar(jugador);
     }
-    System.out.println("APOSTA!:" + apostaUsuari);
+    
+    if(opcioUsuari.equalsIgnoreCase("N")){
+      jugadorsAfegir++;
+      System.out.println("A la proxima ronda afegirem el nou jugador!");
+      tractarOpcio(demanarOpcio(), jugador);     
+    }
+    
+    if(opcioUsuari.equalsIgnoreCase("P")){
+      serialitzaObjecte();
+      System.exit(0);
+    }
+    
+  }
+  
+  boolean apostaCorrecte(int aposta, Jugador jugador){
+    if(aposta>=0 && aposta<=jugador.getMonedes()){
+      return true;
+    }
+      return false;
+    
   }
 
+  void apostar(Jugador jugador){
+    
+    int apostaJug = -1;
+    System.out.println("Quantes monedes vols apostar?");
+    
+    //Comprovem que el jugador introdueix un enter.
+    while(!lector.hasNextInt()){
+    	lector.next();
+    	System.out.println("Nomès números enters! Torna-hi:");
+    }          
+    apostaJug = lector.nextInt();
+    
+    //Comprovem si l'aposta es correcte
+    while(!apostaCorrecte(apostaJug, jugador)){
+      
+      System.out.println("Aposta incorrecte! Torna-hi:");
+      apostaJug = lector.nextInt();
+    }
+    jugador.setMonedes(jugador.getMonedes() - apostaJug);
+    jugador.setAposta(apostaJug);
+    System.out.println("El jug " + jugador.getNom() + " aposta " + jugador.getAposta() + ".");
+    
+  }
+  
+  void reinicialitzarApostes(){
+    for(int i = 0; i<jugadorsPartida.size();i++){
+      jugadorsPartida.get(i).setAposta(0);
+    }
+  }
+  
   void serialitzaObjecte() {
     try {
       FileOutputStream fs = new FileOutputStream("serial.ser");
@@ -227,7 +285,7 @@ public class Joc implements Serializable {
   }
 
   void desSerialitzarObjecte() {
-    
+
     try {
       FileInputStream fis = new FileInputStream("serial.ser");
       ObjectInputStream ois = new ObjectInputStream(fis);

@@ -2,19 +2,12 @@ package net.josegarvin.cartaMesAlta;
 
 import java.io.Serializable;
 
+public class Carta implements Serializable {
 
 
-public class Carta implements Serializable{
-
-  /**
- * 
- */
   private static final long serialVersionUID = -191781805571611534L;
-/**
- * 
- */
-  
-int numero;
+
+  int numero;
   String pal;
 
   Carta(int numC, String palC) {
@@ -37,8 +30,8 @@ int numero;
   public void setPal(String pal) {
     this.pal = pal;
   }
-  
-  public String cartaToString(){
+
+  public String cartaToString() {
     return this.numero + this.pal;
   }
 
