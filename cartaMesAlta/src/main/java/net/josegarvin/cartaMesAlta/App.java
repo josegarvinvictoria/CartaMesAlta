@@ -1,48 +1,36 @@
 package net.josegarvin.cartaMesAlta;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Collections;
-import java.util.logging.Level;
-
 /**
- * Hello world!
+ * Classe principal del programa "CartaMèsAlta".
+ * 
+ * @author Jose Garvin Victoria.
  *
  */
-public class App {
-  public static void main(String[] args) {
+public final class App {
+
+  /**
+   * Constructor per defecte de la classe.
+   */
+  private App() {
+
+  }
+
+  /**
+   * Mètode principal del programa "CartaMèsAlta".
+   * 
+   * @param args
+   *          --> Array utilitzat quan es reben parametres quan es crida al
+   *          programa per linia de comandes.
+   */
+  public static void main(final String[] args) {
     Baralla barallaEspanyola = new Baralla();
 
-    //barallaEspanyola.barallaToString();
-   
-    
+    // barallaEspanyola.barallaToString();
+
     Joc jocCartes = new Joc(barallaEspanyola);
-  
-      
-    String nFitxer = "serial.ser";
-    File fitxer = new File(nFitxer);
-    
-    if(fitxer.exists()){
-      System.out.println("S'ha trobat un arxiu de serialització!");
-      jocCartes.desSerialitzarObjecte();
-      jocCartes.continuaJoc();
-    }else{
-      System.out.println("NO s'ha trobat cap arxiu de serialització!");
-      jocCartes.començaJoc();
-    }
-    
-      
 
-   
+    jocCartes.comencaJoc();
 
-    
-
-    
   }
 
 }

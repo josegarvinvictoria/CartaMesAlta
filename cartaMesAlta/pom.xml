@@ -30,7 +30,7 @@
   			<configuration>
   				<archive>
   					<manifest>
-  						<mainClass>net.josegarvin.App</mainClass>
+  						<mainClass>net.josegarvin.cartaMesAlta.App</mainClass>
   					</manifest>
   				</archive>
   			</configuration>
