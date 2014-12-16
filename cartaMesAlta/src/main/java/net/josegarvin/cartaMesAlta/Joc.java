@@ -75,7 +75,7 @@ public class Joc implements Serializable {
    * Mètode que s'encarrega d'iniciar el joc.
    */
   final void comencaJoc() {
-    System.out.println(barallaCartes.getCartes().size());
+    
     if (!fitxerSerial.exists()) {
       indicarJugInicials();
     } else {

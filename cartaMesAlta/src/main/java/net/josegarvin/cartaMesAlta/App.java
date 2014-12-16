@@ -19,8 +19,7 @@ public final class App {
    * Mètode principal del programa "CartaMèsAlta".
    * 
    * @param args
-   *          --> Array utilitzat quan es reben parametres quan es crida al
-   *          programa per linia de comandes.
+   *          --> .
    */
   public static void main(final String[] args) {
     Baralla barallaEspanyola = new Baralla();
